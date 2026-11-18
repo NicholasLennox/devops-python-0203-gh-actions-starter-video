@@ -1,0 +1,19 @@
+name: CI 
+ 
+on: 
+  pull_request: 
+    branches: 
+      - main 
+ 
+jobs: 
+  test: 
+    runs-on: ubuntu-latest 
+    steps: 
+      - name: Checkout code 
+        uses: actions/checkout@v4 
+ 
+      - name: Build Docker image 
+        run: docker build -t tasks-api . 
+        
+      - name: Run tests inside container
+        run: docker run -e ENVIRONMENT=${{ secrets.ENVIRONMENT }} tasks-api python -m pytest
