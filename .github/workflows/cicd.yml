@@ -94,4 +94,4 @@ jobs:
         with:
           app-name: production-tasks-api-video
           publish-profile: ${{ secrets.PUBLISHPROFILE }}
-          images: ghcr.io/${{ env.OWNER }}/tasks-api:${{ github.sha }}
+          images: ghcr.io/${{ env.OWNER }}/tasks-api-video:${{ github.sha }}
