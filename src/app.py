@@ -11,7 +11,8 @@ environment = os.environ.get("ENVIRONMENT")
 tasks = [
     {"id": 1, "title": "Write documentation"},
     {"id": 2, "title": "Review pull requests"},
-    {"id": 3, "title": "Deploy to staging"}
+    {"id": 3, "title": "Deploy to staging"},
+    {"id": 4, "title": "Deploy to production"}
 ]
 
 next_task_id = 3
