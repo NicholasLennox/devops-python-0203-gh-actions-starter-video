@@ -4,6 +4,10 @@ on:
   pull_request: 
     branches: 
       - main 
+
+permissions:
+  checks: write
+  pull-requests: write
  
 jobs: 
   test: 
@@ -16,4 +20,15 @@ jobs:
         run: docker build -t tasks-api . 
         
       - name: Run tests inside container
-        run: docker run -e ENVIRONMENT=${{ secrets.ENVIRONMENT }} tasks-api python -m pytest
+        run: |
+          mkdir -p test-results
+          docker run \
+            -e ENVIRONMENT=${{ secrets.ENVIRONMENT }} \
+            -v $(pwd)/test-results:/app/test-results \
+            tasks-api python -m pytest --junitxml=test-results/results.xml
+      
+      - name: Publish test results 
+        uses: EnricoMi/publish-unit-test-result-action@v2 
+        if: always() 
+        with: 
+          files: test-results/results.xml
