@@ -1,17 +1,24 @@
-name: CI 
+name: CI/CD 
  
 on: 
   pull_request: 
     branches: 
       - main 
-
-permissions:
-  checks: write
-  pull-requests: write
  
+  push: 
+    branches: 
+      - main 
+ 
+permissions: 
+  checks: write 
+  pull-requests: write 
+  packages: write 
+  contents: read 
+  
 jobs: 
   test: 
     runs-on: ubuntu-latest 
+    if: github.event_name == 'pull_request' 
     steps: 
       - name: Checkout code 
         uses: actions/checkout@v4 
@@ -19,16 +26,36 @@ jobs:
       - name: Build Docker image 
         run: docker build -t tasks-api . 
         
-      - name: Run tests inside container
-        run: |
-          mkdir -p test-results
-          docker run \
-            -e ENVIRONMENT=${{ secrets.ENVIRONMENT }} \
-            -v $(pwd)/test-results:/app/test-results \
-            tasks-api python -m pytest --junitxml=test-results/results.xml
-      
+      - name: Run tests inside container 
+        run: | 
+          mkdir -p test-results 
+          docker run \ 
+            -e ENVIRONMENT=${{ secrets.ENVIRONMENT }} \ 
+            -v $(pwd)/test-results:/app/test-results \ 
+            tasks-api python -m pytest --junitxml=test-results/results.xml 
+ 
       - name: Publish test results 
         uses: EnricoMi/publish-unit-test-result-action@v2 
         if: always() 
         with: 
-          files: test-results/results.xml
+          files: test-results/results.xml 
+ 
+  build-and-push: 
+    runs-on: ubuntu-latest 
+    if: github.event_name == 'push' 
+    steps: 
+      - name: Checkout code 
+        uses: actions/checkout@v4 
+ 
+      - name: Log in to GitHub Container Registry 
+        uses: docker/login-action@v3 
+        with: 
+          registry: ghcr.io 
+          username: ${{ github.actor }} 
+          password: ${{ secrets.GITHUB_TOKEN }} 
+ 
+      - name: Build and push image
+        run: |
+          OWNER=${GITHUB_REPOSITORY_OWNER,,}
+          docker build -t ghcr.io/$OWNER/tasks-api-video:${{ github.sha }} .
+          docker push ghcr.io/$OWNER/tasks-api-video:${{ github.sha }}
