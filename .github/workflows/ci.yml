@@ -16,4 +16,9 @@ jobs:
         run: docker build -t tasks-api . 
         
       - name: Run tests inside container
-        run: docker run -e ENVIRONMENT=${{ secrets.ENVIRONMENT }} tasks-api python -m pytest
+        run: |
+          mkdir -p test-results
+          docker run \
+            -e ENVIRONMENT=${{ secrets.ENVIRONMENT }} \
+            -v $(pwd)/test-results:/app/test-results \
+            tasks-api python -m pytest --junitxml=test-results/results.xml

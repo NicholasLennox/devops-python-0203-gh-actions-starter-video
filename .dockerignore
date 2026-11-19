@@ -1,6 +1,9 @@
-venv/ 
+.venv 
 .env 
 .env.example
 __pycache__/ 
+.pytest_cache
+.github
 *.pyc 
 .git/
+test-results/

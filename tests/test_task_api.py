@@ -18,7 +18,7 @@ def test_health_returns_200(client):
 def test_health_returns_status_ok(client):
     response = client.get("/health")
     data = response.get_json()
-    assert data["status"] == "okay"
+    assert data["status"] == "oky"
 
 def test_health_returns_environment(client):
     response = client.get("/health")
