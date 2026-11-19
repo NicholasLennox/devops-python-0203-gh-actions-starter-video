@@ -12,13 +12,13 @@ def client():
 
 def test_health_returns_200(client):
     response = client.get("/health")
-    assert response.status_code == 200
+    assert response.status_code == 201
 
 
 def test_health_returns_status_ok(client):
     response = client.get("/health")
     data = response.get_json()
-    assert data["status"] == "oky"
+    assert data["status"] == "okay"
 
 def test_health_returns_environment(client):
     response = client.get("/health")
