@@ -59,4 +59,5 @@ jobs:
           OWNER=${GITHUB_REPOSITORY_OWNER,,}
           docker build -t ghcr.io/$OWNER/tasks-api-video:${{ github.sha }} .
           docker push ghcr.io/$OWNER/tasks-api-video:${{ github.sha }}
+          docker tag ghcr.io/$OWNER/tasks-api-video:${{ github.sha }} ghcr.io/$OWNER/tasks-api-video:latest
           docker push ghcr.io/$OWNER/tasks-api-video:latest
